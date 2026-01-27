@@ -3,123 +3,862 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Waste Management System</title>
+  <title>Dashboard - Students & Books Management System</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #28a745 0%, #218838 100%);
+      --secondary-gradient: linear-gradient(135deg, #38f9d7 0%, #43e97b 100%);
+      --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --glass-bg: rgba(255, 255, 255, 0.9);
+      --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background: #f5f7fa;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
     }
 
-    .navbar {
-      background: linear-gradient(to right, #28a745, #218838);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Animated Background */
+    .background-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
     }
 
-    .navbar-brand img {
+    .bubble {
+      position: absolute;
       border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 15s infinite linear;
     }
 
-    .hero {
-      text-align: center;
-      margin-top: 50px;
-      margin-bottom: 40px;
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0;
+      }
     }
 
-    .hero h1 {
-      font-size: 2.8rem;
-      color: #2f4f4f;
+    /* Navigation */
+    .navbar-glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 1rem 0;
     }
 
-    .hero p {
-      color: #6c757d;
-      font-size: 1.2rem;
+    .nav-brand {
+      font-weight: 800;
+      color: white;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
-    .card {
-      transition: transform 0.2s, box-shadow 0.2s;
-      border: none;
-      border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    .nav-brand i {
+      color: white;
+      font-size: 2rem;
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .btn-success {
-      border-radius: 50px;
-      padding: 10px 20px;
+    .nav-link {
+      color: rgba(255, 255, 255, 0.9) !important;
       font-weight: 500;
+      padding: 0.5rem 1.5rem !important;
+      border-radius: 50px;
+      margin: 0 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .nav-link.active {
+      background: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      padding: 6rem 0 4rem;
+      color: white;
+      position: relative;
+    }
+
+    .hero-section h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(to right, #ffffff, #f0fff4);
+      -webkit-background-clip: text;
+      -moz-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-section p {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 3rem;
+    }
+
+    /* Stats Bar */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* Features Grid */
+    .features-section {
+      padding: 3rem 0 6rem;
+    }
+
+    .section-title {
+      text-align: center;
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .feature-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      padding: 2.5rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-15px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+    }
+
+    .feature-card:nth-child(1)::before {
+      background: var(--primary-gradient);
+    }
+
+    .feature-card:nth-child(2)::before {
+      background: var(--secondary-gradient);
+    }
+
+    .feature-card:nth-child(3)::before {
+      background: var(--warning-gradient);
+    }
+
+    .feature-card:nth-child(4)::before {
+      background: var(--info-gradient);
+    }
+
+    .feature-card:nth-child(5)::before {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+    }
+
+    .feature-card:nth-child(1) .feature-icon {
+      background: var(--primary-gradient);
+    }
+
+    .feature-card:nth-child(2) .feature-icon {
+      background: var(--secondary-gradient);
+    }
+
+    .feature-card:nth-child(3) .feature-icon {
+      background: var(--warning-gradient);
+    }
+
+    .feature-card:nth-child(4) .feature-icon {
+      background: var(--info-gradient);
+    }
+
+    .feature-card:nth-child(5) .feature-icon {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .feature-card h3 {
+      color: #2d3748;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .feature-card p {
+      color: #718096;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .feature-btn {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .feature-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+      color: white;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      padding: 3rem;
+      margin: 3rem auto;
+      max-width: 1200px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .quick-actions-title {
+      text-align: center;
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .action-item {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .action-item:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-5px);
+    }
+
+    .action-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: white;
+      font-size: 1.25rem;
+    }
+
+    .action-label {
+      color: white;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .action-desc {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 3rem 0;
+      color: rgba(255, 255, 255, 0.8);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 4rem;
+    }
+
+    .footer p {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    /* Animation Classes */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Floating Animation */
+    @keyframes floatAnimation {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .floating {
+      animation: floatAnimation 3s ease-in-out infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-section h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero-section {
+        padding: 4rem 0 3rem;
+      }
+      
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .stat-card {
+        padding: 1.5rem;
+      }
+      
+      .quick-actions {
+        padding: 2rem 1rem;
+        margin: 2rem 1rem;
+      }
+      
+      .action-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* System Status */
+    .system-status {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-top: 3rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .status-title {
+      color: white;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
   </style>
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center" href="/">
-        
-        <span>Books&Student Management System</span>
+  <!-- Animated Background -->
+  <div class="background-animation">
+    <div class="bubble" style="width: 100px; height: 100px; left: 10%; animation-delay: 0s;"></div>
+    <div class="bubble" style="width: 150px; height: 150px; left: 25%; animation-delay: 2s;"></div>
+    <div class="bubble" style="width: 80px; height: 80px; left: 50%; animation-delay: 4s;"></div>
+    <div class="bubble" style="width: 120px; height: 120px; left: 75%; animation-delay: 6s;"></div>
+    <div class="bubble" style="width: 90px; height: 90px; left: 90%; animation-delay: 8s;"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-glass">
+    <div class="container">
+      <a class="navbar-brand nav-brand" href="/">
+        <i class="fas fa-graduation-cap floating"></i>
+        Students & Books Management System
       </a>
-      <div class="collapse navbar-collapse">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <i class="fas fa-bars text-white"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/record">Add Student</a>
+            <a class="nav-link active" href="/">
+              <i class="fas fa-home me-1"></i> Home
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/book">Add Book</a>
+            <a class="nav-link" href="/record">
+              <i class="fas fa-user-plus me-1"></i> Add Student
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/record/view">View Records</a>
+            <a class="nav-link" href="/book">
+              <i class="fas fa-book me-1"></i> Add Book
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/record/view">
+              <i class="fas fa-users me-1"></i> View Students
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/record/order">
+              <i class="fas fa-clipboard-list me-1"></i> View Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/info">
+              <i class="fas fa-search me-1"></i> Search Books
+            </a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <div class="container hero">
-    <h1>Welcome to the Books&Student Management System</h1>
-    <p>Efficiently manage, monitor, and organize your Books&Student Management System records.</p>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <h1 class="animate-on-scroll">Welcome to Students & Books Management System</h1>
+      <p class="animate-on-scroll" style="animation-delay: 0.2s">
+        Advanced management system for modern educational institutions
+      </p>
+      
+      <!-- Stats Bar -->
+      <div class="stats-container">
+        <div class="stat-card animate-on-scroll" style="animation-delay: 0.4s">
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-number" id="studentsCount">0</div>
+          <div class="stat-label">Total Students</div>
+        </div>
+        
+        <div class="stat-card animate-on-scroll" style="animation-delay: 0.6s">
+          <div class="stat-icon">
+            <i class="fas fa-book"></i>
+          </div>
+          <div class="stat-number" id="booksCount">0</div>
+          <div class="stat-label">Books Available</div>
+        </div>
+        
+        <div class="stat-card animate-on-scroll" style="animation-delay: 0.8s">
+          <div class="stat-icon">
+            <i class="fas fa-exchange-alt"></i>
+          </div>
+          <div class="stat-number" id="issuedCount">0</div>
+          <div class="stat-label">Books Issued</div>
+        </div>
+        
+        <div class="stat-card animate-on-scroll" style="animation-delay: 1s">
+          <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-number" id="availableCount">0</div>
+          <div class="stat-label">Available Now</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- System Status -->
+  <div class="container">
+    <div class="system-status animate-on-scroll" style="animation-delay: 1.2s">
+      <h3 class="status-title">
+        <span class="status-indicator"></span>
+        System Status: All Services Operational
+      </h3>
+      <p class="text-white mb-0">
+        <i class="fas fa-info-circle me-2"></i>
+        All systems are running smoothly. Last updated: Just now
+      </p>
+    </div>
   </div>
 
-  <div class="container mb-5">
-    <div class="row justify-content-center">
-      <div class="col-md-5 mb-4">
-        <div class="card p-4 text-center">
-          <div class="card-body">
-            <h5 class="card-title mb-3">Add New Student Record</h5>
-            <a href="/record" class="btn btn-success">Go to Add Student</a>
+  <!-- Quick Actions -->
+  <div class="container">
+    <div class="quick-actions animate-on-scroll" style="animation-delay: 1.4s">
+      <h3 class="quick-actions-title">Quick Actions</h3>
+      <div class="action-grid">
+        <div class="action-item" onclick="window.location.href='/record'">
+          <div class="action-icon">
+            <i class="fas fa-user-plus"></i>
           </div>
+          <div class="action-label">Add Student</div>
+          <div class="action-desc">Register new students</div>
+          <i class="fas fa-arrow-right text-white"></i>
         </div>
-      </div>
-      <div class="col-md-5 mb-4">
-        <div class="card p-4 text-center">
-          <div class="card-body">
-            <h5 class="card-title mb-3">View Student Records</h5>
-            <a href="/record/view" class="btn btn-success">Go to view Students</a>
+        
+        <div class="action-item" onclick="window.location.href='/book'">
+          <div class="action-icon">
+            <i class="fas fa-book-medical"></i>
           </div>
+          <div class="action-label">Add Book</div>
+          <div class="action-desc">Add books to library</div>
+          <i class="fas fa-arrow-right text-white"></i>
         </div>
-      </div>
-      <div class="col-md-5 mb-4">
-        <div class="card p-4 text-center">
-          <div class="card-body">
-            <h5 class="card-title mb-3">Add Books Records</h5>
-            <a href="/addbook" class="btn btn-success">Go to Add Books</a>
+        
+        <div class="action-item" onclick="window.location.href='/record/view'">
+          <div class="action-icon">
+            <i class="fas fa-users"></i>
           </div>
+          <div class="action-label">View Students</div>
+          <div class="action-desc">Manage student records</div>
+          <i class="fas fa-arrow-right text-white"></i>
         </div>
-      </div>
-      <div class="col-md-5 mb-4">
-        <div class="card p-4 text-center">
-          <div class="card-body">
-            <h5 class="card-title mb-3">View Orders</h5>
-            <a href="/record/order" class="btn btn-success">Go To See Orders</a>
+        
+        <div class="action-item" onclick="window.location.href='/info'">
+          <div class="action-icon">
+            <i class="fas fa-search"></i>
           </div>
+          <div class="action-label">Search Books</div>
+          <div class="action-desc">Find books in library</div>
+          <i class="fas fa-arrow-right text-white"></i>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <h2 class="section-title animate-on-scroll">System Features</h2>
+      
+      <div class="feature-grid">
+        <!-- Feature 1 -->
+        <div class="feature-card animate-on-scroll">
+          <div class="feature-icon">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <h3>Student Management</h3>
+          <p>
+            Comprehensive student database with detailed profiles, 
+            enrollment tracking, and academic record management.
+          </p>
+          <a href="/record" class="feature-btn">
+            <i class="fas fa-user-plus me-2"></i> Add Student
+          </a>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-card animate-on-scroll" style="animation-delay: 0.2s">
+          <div class="feature-icon">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <h3>Library Management</h3>
+          <p>
+            Complete library system with book cataloging, 
+            issuance tracking, and automated notifications.
+          </p>
+          <a href="/book" class="feature-btn">
+            <i class="fas fa-book-medical me-2"></i> Add Book
+          </a>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-card animate-on-scroll" style="animation-delay: 0.4s">
+          <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>Analytics Dashboard</h3>
+          <p>
+            Real-time analytics and reports on student performance, 
+            library usage, and institutional statistics.
+          </p>
+          <a href="/record/view" class="feature-btn">
+            <i class="fas fa-chart-bar me-2"></i> View Analytics
+          </a>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-card animate-on-scroll" style="animation-delay: 0.6s">
+          <div class="feature-icon">
+            <i class="fas fa-search"></i>
+          </div>
+          <h3>Advanced Search</h3>
+          <p>
+            Powerful search capabilities for books and students with 
+            filters, sorting, and quick access to information.
+          </p>
+          <a href="/info" class="feature-btn">
+            <i class="fas fa-search me-2"></i> Search Books
+          </a>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="feature-card animate-on-scroll" style="animation-delay: 0.8s">
+          <div class="feature-icon">
+            <i class="fas fa-clipboard-check"></i>
+          </div>
+          <h3>Order Management</h3>
+          <p>
+            Track book issuances, returns, and manage borrowing history 
+            with automated reminders and notifications.
+          </p>
+          <a href="/record/order" class="feature-btn">
+            <i class="fas fa-clipboard-list me-2"></i> View Orders
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p class="mb-3">
+        <i class="fas fa-shield-alt me-2"></i>
+        Secure & Reliable Student Management System
+      </p>
+      <p class="small mb-3">
+        © 2024 Students & Books Management System. All rights reserved.
+      </p>
+      <div class="footer-links">
+        <a href="/record">Add Student</a>
+        <a href="/book">Add Book</a>
+        <a href="/record/view">View Students</a>
+        <a href="/record/order">View Orders</a>
+        <a href="/info">Search Books</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Animate numbers
+    function animateCounter(element, target) {
+      let current = 0;
+      const increment = target / 50;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          element.textContent = target;
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(current);
+        }
+      }, 40);
+    }
+
+    // Animate on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    // Observe all animate-on-scroll elements
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Simulate stats (replace with actual data from your backend)
+    setTimeout(() => {
+      animateCounter(document.getElementById('studentsCount'), 156);
+      animateCounter(document.getElementById('booksCount'), 289);
+      animateCounter(document.getElementById('issuedCount'), 124);
+      animateCounter(document.getElementById('availableCount'), 165);
+    }, 1000);
+
+    // Create bubbles continuously
+    function createBubble() {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      const size = Math.random() * 100 + 50;
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${Math.random() * 100}%`;
+      bubble.style.animationDelay = `${Math.random() * 10}s`;
+      bubble.style.animationDuration = `${15 + Math.random() * 10}s`;
+      document.querySelector('.background-animation').appendChild(bubble);
+      
+      setTimeout(() => {
+        bubble.remove();
+      }, 25000);
+    }
+
+    // Create initial bubbles
+    for (let i = 0; i < 10; i++) {
+      setTimeout(createBubble, i * 500);
+    }
+
+    // Keep creating bubbles
+    setInterval(createBubble, 2000);
+
+    // Update system time
+    function updateSystemTime() {
+      const now = new Date();
+      const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      const timeString = now.toLocaleDateString('en-US', options);
+      const timeElement = document.querySelector('.system-status p');
+      if (timeElement) {
+        timeElement.innerHTML = `<i class="fas fa-info-circle me-2"></i>
+          All systems are running smoothly. Last updated: ${timeString}`;
+      }
+    }
+
+    // Update time every minute
+    updateSystemTime();
+    setInterval(updateSystemTime, 60000);
+
+    // Add click effects to action items
+    document.querySelectorAll('.action-item').forEach(item => {
+      item.addEventListener('click', function() {
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          this.style.transform = '';
+        }, 200);
+      });
+    });
+  </script>
 </body>
 </html>

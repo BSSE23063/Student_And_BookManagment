@@ -3,217 +3,1246 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>View Student Records</title>
+  <title>Student Records Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #28a745 0%, #218838 100%);
+      --secondary-gradient: linear-gradient(135deg, #38f9d7 0%, #43e97b 100%);
+      --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --glass-bg: rgba(255, 255, 255, 0.95);
+      --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #f5f7fa;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      padding-top: 80px;
     }
 
-    .navbar {
-      background: linear-gradient(to right, #28a745, #218838);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .table-container {
-      background-color: white;
-      border-radius: 20px;
-      padding: 30px;
+    /* Navigation */
+    .navbar-glass {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      margin-top: 60px;
+      padding: 1rem 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
     }
 
-    h2 {
-      color: #2f4f4f;
-      margin-bottom: 30px;
+    .nav-brand {
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -moz-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.5rem;
     }
 
-    th {
-      background-color: #28a745 !important;
-      color: white !important;
-    }
-
-    td {
-      background-color: #ffffff;
-    }
-
-    .navbar-brand img {
+    .nav-brand img {
       width: 40px;
       height: 40px;
       margin-right: 10px;
       border-radius: 50%;
+      object-fit: cover;
     }
 
-    .modal {
+    .nav-link {
+      color: #4a5568 !important;
+      font-weight: 500;
+      padding: 0.5rem 1rem !important;
+      border-radius: 12px;
+      margin: 0 0.25rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background: var(--primary-gradient);
+      color: white !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .nav-link.active {
+      background: var(--primary-gradient);
+      color: white !important;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem 0;
+      position: relative;
+    }
+
+    .dashboard-header::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      background: var(--primary-gradient);
+      opacity: 0.05;
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .dashboard-title {
+      font-size: 3rem;
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -moz-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    .dashboard-subtitle {
+      color: #718096;
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .students-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--primary-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+    }
+
+    /* Dashboard Container */
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1rem 4rem;
+    }
+
+    /* Stats Summary */
+    .stats-summary {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 15px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -moz-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: #64748b;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* Student Table */
+    .student-table-container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 2rem;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(40, 167, 69, 0.1);
+    }
+
+    .table-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2d3748;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .table-search {
+      position: relative;
+      width: 300px;
+    }
+
+    .search-input {
+      border: 2px solid #e2e8f0;
+      border-radius: 50px;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      font-size: 0.95rem;
+      width: 100%;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .search-input:focus {
+      border-color: #28a745;
+      box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #28a745;
+    }
+
+    /* Student Table */
+    .student-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .student-table thead th {
+      background: var(--primary-gradient);
+      color: white;
+      font-weight: 600;
+      padding: 1.25rem 1.5rem;
+      border: none;
+      text-align: left;
+    }
+
+    .student-table thead th:first-child {
+      border-top-left-radius: 15px;
+    }
+
+    .student-table thead th:last-child {
+      border-top-right-radius: 15px;
+    }
+
+    .student-table tbody td {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .student-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .student-table tbody tr:last-child td:first-child {
+      border-bottom-left-radius: 15px;
+    }
+
+    .student-table tbody tr:last-child td:last-child {
+      border-bottom-right-radius: 15px;
+    }
+
+    .student-table tbody tr {
+      transition: all 0.2s ease;
+    }
+
+    .student-table tbody tr:hover {
+      background: #f8fafc;
+      transform: translateX(5px);
+    }
+
+    /* Student Info Cell */
+    .student-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .student-avatar {
+      width: 45px;
+      height: 45px;
+      background: var(--primary-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .student-details h6 {
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .student-details small {
+      color: #718096;
+      font-size: 0.85rem;
+    }
+
+    /* Email Cell */
+    .email-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Roll Number Cell */
+    .rollnumber-badge {
+      background: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Action Cell */
+    .action-cell {
+      text-align: center;
+    }
+
+    .action-btn {
+      background: var(--secondary-gradient);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(56, 249, 215, 0.3);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(56, 249, 215, 0.4);
+    }
+
+    /* Modal Styles */
+    .modal-glass {
       display: none;
       position: fixed;
-      z-index: 1050;
+      z-index: 9999;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease;
     }
 
-    .modal-content {
-      background-color: #fefefe;
-      margin: 10% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 60%;
-      border-radius: 10px;
+    .modal-content-glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 25px;
+      width: 90%;
+      max-width: 800px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      animation: slideIn 0.4s ease;
+      overflow: hidden;
     }
 
-    .close {
-      color: #aaa;
+    .modal-header-glass {
+      padding: 1.5rem 2rem;
+      background: var(--primary-gradient);
+      color: white;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-header-glass h5 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .modal-close {
+      color: white;
       float: right;
-      font-size: 28px;
+      font-size: 1.75rem;
       font-weight: bold;
       cursor: pointer;
+      line-height: 1;
+      transition: all 0.2s ease;
     }
 
-    .close:hover {
-      color: black;
+    .modal-close:hover {
+      color: rgba(255, 255, 255, 0.8);
+      transform: scale(1.1);
+    }
+
+    .modal-body-glass {
+      padding: 2rem;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .modal-subtitle {
+      color: #64748b;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+
+    /* Books Grid */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .book-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .book-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .book-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.25rem;
+    }
+
+    .book-author {
+      color: #718096;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .book-year {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .book-actions {
+      margin-top: 1rem;
+    }
+
+    .assign-btn {
+      background: var(--secondary-gradient);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .assign-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(56, 249, 215, 0.3);
+    }
+
+    .assign-btn.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Empty States */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%);
+      border-radius: 20px;
+      border: 2px dashed #cbd5e1;
+      margin: 2rem 0;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      color: #cbd5e1;
+      margin-bottom: 1.5rem;
+    }
+
+    .empty-state h3 {
+      color: #64748b;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: #94a3b8;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding-top: 70px;
+      }
+      
+      .dashboard-title {
+        font-size: 2.2rem;
+      }
+      
+      .table-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+      
+      .table-search {
+        width: 100%;
+      }
+      
+      .student-table {
+        font-size: 0.9rem;
+      }
+      
+      .student-table thead th,
+      .student-table tbody td {
+        padding: 1rem;
+      }
+      
+      .books-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content-glass {
+        width: 95%;
+        margin: 10% auto;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center" href="/">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-glass">
+    <div class="container">
+      <a class="navbar-brand nav-brand d-flex align-items-center" href="/">
         <img src="/images/logo.jpg" alt="Logo">
-        Students&Books Management System
+        Students & Books Management System
       </a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/record">Add Student Record</a>
+            <a class="nav-link" href="/">
+              <i class="fas fa-home me-1"></i> Home
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/record/view">View Student Records</a>
+            <a class="nav-link" href="/record">
+              <i class="fas fa-user-plus me-1"></i> Add Student
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/book">
+              <i class="fas fa-book me-1"></i> Add Book
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/record/view">
+              <i class="fas fa-users me-1"></i> View Students
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/record/order">
+              <i class="fas fa-clipboard-list me-1"></i> View Orders
+            </a>
+          </li>
+          <li class="nav-link" href="/info">
+            <i class="fas fa-search me-1"></i> Search Books
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <div class="container table-container">
-    <h2 class="text-center">Student Records</h2>
-    <table class="table table-bordered text-center">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Roll Number</th>
-          <th>Details</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (locals.records && records.length > 0) { %>
-          <% records.forEach(record => { %>
-            <tr>
-              <td><%= record.name %></td>
-              <td><%= record.email %></td>
-              <td><%= record.rollnumber %></td>
-              <td>
-                <button class="openModalBtn btn btn-success" data-id="<%= record.rollnumber %>">Add Book</button>
+  <!-- Dashboard Header -->
+  <div class="container">
+    <div class="dashboard-header">
+      <div class="students-icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <h1 class="dashboard-title">Student Records Dashboard</h1>
+      <p class="dashboard-subtitle">
+        View and manage all student records, assign books, and track academic progress
+      </p>
+    </div>
+  </div>
 
-                <!-- Modal -->
-                <div id="modal-<%= record.rollnumber %>" class="modal custom-modal">
-                  <div class="modal-content">
-                    <span class="close" data-id="<%= record.rollnumber %>">&times;</span>
-                    <h5>Available Books</h5>
-                    <table class="table table-striped">
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th>Author</th>
-                          <th>Year</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <% if (locals.books && books.length > 0) { %>
-                          <% books.forEach(book => { %>
-                            <tr>
-                              <td><%= book.title %></td>
-                              <td><%= book.author %></td>
-                              <td><%= book.year %></td>
-                              <td>
-                                <button class="btn btn-sm btn-success"  onclick="addbook('<%= record.rollnumber %>','<%= book._id %>')">
-                                Add Book
-                                </button>
-                              </td>
-                            </tr>
-                          <% }) %>
-                        <% } else { %>
-                          <tr><td colspan="4">No books available</td></tr>
-                        <% } %>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </td>
+  <!-- Dashboard Container -->
+  <div class="dashboard-container">
+    <!-- Stats Summary -->
+    <% if (locals.records && records.length > 0) { %>
+      <div class="stats-summary animate__animated animate__fadeIn">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number"><%= records.length %></div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">
+              <% 
+                let studentsWithBooks = 0;
+                records.forEach(record => {
+                  if (record.purchase && record.purchase.length > 0) {
+                    studentsWithBooks++;
+                  }
+                });
+              %>
+              <%= studentsWithBooks %>
+            </div>
+            <div class="stat-label">Students with Books</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">
+              <% 
+                let totalBooks = 0;
+                records.forEach(record => {
+                  if (record.purchase) {
+                    totalBooks += record.purchase.length;
+                  }
+                });
+              %>
+              <%= totalBooks %>
+            </div>
+            <div class="stat-label">Total Books Assigned</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">
+              <%= locals.books ? books.length : 0 %>
+            </div>
+            <div class="stat-label">Books Available</div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- Student Table Container -->
+    <div class="student-table-container">
+      <div class="table-header">
+        <h3 class="table-title">
+          <i class="fas fa-user-graduate text-success"></i>
+          Student Directory
+        </h3>
+        
+        <div class="table-search">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" 
+                 class="search-input" 
+                 placeholder="Search students..."
+                 id="studentSearch">
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="student-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Email</th>
+              <th>Roll Number</th>
+              <th>Actions</th>
             </tr>
-          <% }) %>
-        <% } else { %>
-          <tr>
-            <td colspan="4" class="text-muted">No records found</td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+          </thead>
+          <tbody>
+            <% if (locals.records && records.length > 0) { %>
+              <% records.forEach(function(record, index) { %>
+                <tr data-name="<%= record.name.toLowerCase() %>" 
+                    data-email="<%= record.email.toLowerCase() %>"
+                    data-rollnumber="<%= record.rollnumber.toLowerCase() %>">
+                  <td>
+                    <div class="student-info">
+                      <div class="student-avatar">
+                        <%= record.name.charAt(0).toUpperCase() %>
+                      </div>
+                      <div class="student-details">
+                        <h6><%= record.name %></h6>
+                        <small>
+                          <i class="fas fa-book me-1"></i>
+                          <%= record.purchase ? record.purchase.length : 0 %> books assigned
+                        </small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="email-cell">
+                      <i class="fas fa-envelope text-primary"></i>
+                      <span><%= record.email %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="rollnumber-badge">
+                      <i class="fas fa-hashtag"></i>
+                      <%= record.rollnumber %>
+                    </span>
+                  </td>
+                  <td class="action-cell">
+                    <button class="action-btn openModalBtn" 
+                            data-id="<%= record.rollnumber %>"
+                            data-name="<%= record.name %>">
+                      <i class="fas fa-plus-circle"></i>
+                      Assign Books
+                    </button>
+                  </td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <tr>
+                <td colspan="4">
+                  <div class="empty-state" style="border: none; background: transparent; padding: 3rem 1rem;">
+                    <i class="fas fa-users empty-icon"></i>
+                    <h3>No Student Records Found</h3>
+                    <p>Start by adding your first student record</p>
+                    <button class="btn btn-success" onclick="window.location.href='/record'">
+                      <i class="fas fa-user-plus me-2"></i>Add First Student
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MODALS - MOVED OUTSIDE TABLE FOR BETTER STRUCTURE -->
+    <% if (locals.records && records.length > 0) { %>
+      <% records.forEach(function(record) { %>
+        <div id="modal-<%= record.rollnumber %>" class="modal-glass">
+          <div class="modal-content-glass">
+            <div class="modal-header-glass">
+              <h5>
+                <i class="fas fa-book-medical"></i>
+                Assign Books to <%= record.name %>
+              </h5>
+              <span class="modal-close" data-id="<%= record.rollnumber %>">&times;</span>
+            </div>
+            
+            <div class="modal-body-glass">
+              <p class="modal-subtitle">
+                <i class="fas fa-info-circle me-2"></i>
+                Select books from the available collection to assign to this student
+              </p>
+              
+              <% if (locals.books && books.length > 0) { %>
+                <div class="books-grid" id="books-grid-<%= record.rollnumber %>">
+                  <% books.forEach(function(book) { %>
+                    <div class="book-card">
+                      <div class="book-header">
+                        <div>
+                          <div class="book-title"><%= book.title %></div>
+                          <div class="book-author">
+                            <i class="fas fa-user-edit"></i>
+                            <%= book.author %>
+                          </div>
+                        </div>
+                        <span class="book-year">
+                          <i class="fas fa-calendar"></i>
+                          <%= book.year %>
+                        </span>
+                      </div>
+                      
+                      <% if (book.description) { %>
+                        <p class="text-muted small mb-2"><%= book.description %></p>
+                      <% } %>
+                      
+                      <div class="book-actions">
+                        <button class="assign-btn" 
+                                data-roll="<%= record.rollnumber %>" 
+                                data-book-id="<%= book._id %>" 
+                                data-book-title="<%= book.title %>">
+                          <i class="fas fa-link"></i>
+                          Assign to Student
+                        </button>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <div class="empty-state" style="border: none; background: transparent; padding: 2rem 1rem;">
+                  <i class="fas fa-book-open empty-icon"></i>
+                  <h4>No Books Available</h4>
+                  <p>Add some books first to assign to students</p>
+                  <button class="btn btn-success" onclick="window.location.href='/book'">
+                    <i class="fas fa-plus me-2"></i>Add Books
+                  </button>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    <% } %>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card border-success">
+          <div class="card-body">
+            <h5 class="card-title text-success">
+              <i class="fas fa-lightbulb me-2"></i>
+              Quick Tips
+            </h5>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                Click "Assign Books" to add books to students
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                Search students by name, email, or roll number
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                View assigned books in the "View Orders" section
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card border-primary">
+          <div class="card-body">
+            <h5 class="card-title text-primary">
+              <i class="fas fa-bolt me-2"></i>
+              Quick Actions
+            </h5>
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-success" onclick="window.location.href='/record'">
+                <i class="fas fa-user-plus me-2"></i>Add New Student
+              </button>
+              <button class="btn btn-outline-primary" onclick="window.location.href='/book'">
+                <i class="fas fa-book-medical me-2"></i>Add New Book
+              </button>
+              <button class="btn btn-outline-warning" onclick="window.location.href='/record/order'">
+                <i class="fas fa-clipboard-list me-2"></i>View All Orders
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Open modal when button is clicked
-    document.querySelectorAll(".openModalBtn").forEach(btn => {
-      btn.addEventListener("click", function () {
-        const id = btn.getAttribute("data-id");
-        const modal = document.getElementById("modal-" + id);
-        modal.style.display = "block";
+    // Global variables
+    let currentModal = null;
+    
+    // Search functionality
+    document.getElementById('studentSearch').addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      const rows = document.querySelectorAll('.student-table tbody tr');
+      
+      rows.forEach(row => {
+        if (!row.dataset.name) return;
+        
+        const name = row.dataset.name;
+        const email = row.dataset.email;
+        const rollnumber = row.dataset.rollnumber;
+        
+        const matches = name.includes(searchTerm) || 
+                       email.includes(searchTerm) || 
+                       rollnumber.includes(searchTerm);
+        
+        row.style.display = matches ? '' : 'none';
       });
     });
 
-    // Close modal when (x) is clicked
-    document.querySelectorAll(".close").forEach(span => {
-      span.addEventListener("click", function () {
-        const id = span.getAttribute("data-id");
-        const modal = document.getElementById("modal-" + id);
-        modal.style.display = "none";
+    // Modal Event Handlers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Handle opening modals
+      document.addEventListener('click', function(e) {
+        const openModalBtn = e.target.closest('.openModalBtn');
+        if (openModalBtn) {
+          e.preventDefault();
+          const modalId = openModalBtn.getAttribute('data-id');
+          openModal(modalId);
+        }
+        
+        // Handle closing modals
+        if (e.target.classList.contains('modal-close') || e.target.closest('.modal-close')) {
+          closeCurrentModal();
+        }
+        
+        // Handle clicking outside modal to close
+        if (e.target.classList.contains('modal-glass')) {
+          closeCurrentModal();
+        }
+        
+        // Handle book assignment button clicks
+        const assignBtn = e.target.closest('.assign-btn');
+        if (assignBtn && !assignBtn.classList.contains('loading')) {
+          handleBookAssignment(assignBtn);
+        }
+      });
+      
+      // Handle Escape key to close modal
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && currentModal) {
+          closeCurrentModal();
+        }
+      });
+      
+      // Initialize table animations
+      const rows = document.querySelectorAll('.student-table tbody tr');
+      rows.forEach((row, index) => {
+        row.style.animationDelay = `${index * 0.05}s`;
+        row.style.animation = 'slideUp 0.5s ease forwards';
       });
     });
 
-    // Close modal when clicking outside
-    window.addEventListener("click", function (event) {
-      if (event.target.classList.contains("custom-modal")) {
-        event.target.style.display = "none";
+    // Modal Functions
+    function openModal(modalId) {
+      closeCurrentModal(); // Close any open modal first
+      const modal = document.getElementById(`modal-${modalId}`);
+      if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        currentModal = modal;
+        
+        // Add fade-in animation
+        modal.style.animation = 'fadeIn 0.3s ease';
+        
+        // Prevent scrolling on body
+        document.body.style.paddingRight = window.innerWidth - document.documentElement.clientWidth + 'px';
+        document.body.classList.add('modal-open');
       }
-    });
-
-   
-    function addbook(rollnumber, bookId) {
-      fetch('/record/purchase', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({rollnumber, bookId })
-      })
-      .then(data => {
-        alert('Book added');
-        console.log(data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Error adding book.');
-      });
     }
+
+    function closeCurrentModal() {
+      if (currentModal) {
+        currentModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        document.body.style.paddingRight = '';
+        document.body.classList.remove('modal-open');
+        currentModal = null;
+      }
+    }
+
+    // Book Assignment Functions
+    async function handleBookAssignment(button) {
+      const rollnumber = button.getAttribute('data-roll');
+      const bookId = button.getAttribute('data-book-id');
+      const bookTitle = button.getAttribute('data-book-title');
+      
+      if (!rollnumber || !bookId || !bookTitle) {
+        console.error('Missing data attributes on assign button');
+        showNotification('Error: Missing information. Please refresh and try again.', 'error');
+        return;
+      }
+      
+      // Get modal and student name
+      const modal = button.closest('.modal-glass');
+      const studentName = modal.querySelector('.modal-header-glass h5').textContent.replace('Assign Books to ', '');
+      
+      // Show loading state
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Assigning...';
+      button.classList.add('loading');
+      button.disabled = true;
+      
+      try {
+        const response = await fetch('/record/purchase', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ rollnumber, bookId })
+        });
+        
+        if (response.ok) {
+          // Show success notification
+          showNotification(`Successfully assigned "${bookTitle}" to ${studentName}`, 'success');
+          
+          // Remove the book card from the modal
+          const bookCard = button.closest('.book-card');
+          if (bookCard) {
+            bookCard.style.opacity = '0.5';
+            bookCard.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+              bookCard.remove();
+              
+              // Check if all books are assigned
+              const booksGrid = modal.querySelector('.books-grid');
+              if (booksGrid && booksGrid.children.length === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.style.border = 'none';
+                emptyState.style.background = 'transparent';
+                emptyState.style.padding = '2rem 1rem';
+                emptyState.innerHTML = `
+                  <i class="fas fa-check-circle empty-icon" style="color: #28a745;"></i>
+                  <h4>All Books Assigned!</h4>
+                  <p>You've assigned all available books to ${studentName}</p>
+                  <button class="btn btn-success" onclick="closeCurrentModal()">
+                    <i class="fas fa-check me-2"></i>Close
+                  </button>
+                `;
+                modal.querySelector('.modal-body-glass').appendChild(emptyState);
+              }
+            }, 300);
+          }
+          
+          // Update student's book count in the table
+          updateStudentBookCount(rollnumber, 1);
+          
+          // Close modal after delay
+          setTimeout(() => {
+            if (document.querySelectorAll('.book-card').length === 0) {
+              closeCurrentModal();
+            }
+          }, 2000);
+          
+        } else {
+          const errorText = await response.text();
+          console.error('Server error:', errorText);
+          throw new Error(`Failed to assign book: ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showNotification(`Error assigning "${bookTitle}" to ${studentName}. Please try again.`, 'error');
+        
+        // Reset button
+        button.innerHTML = originalText;
+        button.classList.remove('loading');
+        button.disabled = false;
+      }
+    }
+
+    // Update student's book count in the table
+    function updateStudentBookCount(rollnumber, increment = 1) {
+      const row = document.querySelector(`tr[data-rollnumber="${rollnumber.toLowerCase()}"]`);
+      if (row) {
+        const bookCountElement = row.querySelector('.student-details small');
+        if (bookCountElement) {
+          const currentMatch = bookCountElement.textContent.match(/\d+/);
+          let currentCount = currentMatch ? parseInt(currentMatch[0]) : 0;
+          currentCount += increment;
+          bookCountElement.innerHTML = `<i class="fas fa-book me-1"></i>${currentCount} book${currentCount !== 1 ? 's' : ''} assigned`;
+          
+          // Update stats if available
+          updateStatsSummary(increment);
+        }
+      }
+    }
+
+    // Update stats summary
+    function updateStatsSummary(booksAdded = 1) {
+      // Update total books assigned
+      const totalBooksElement = document.querySelector('.stat-item:nth-child(3) .stat-number');
+      if (totalBooksElement) {
+        const currentTotal = parseInt(totalBooksElement.textContent) || 0;
+        totalBooksElement.textContent = currentTotal + booksAdded;
+      }
+      
+      // Update books available
+      const booksAvailableElement = document.querySelector('.stat-item:nth-child(4) .stat-number');
+      if (booksAvailableElement) {
+        const currentAvailable = parseInt(booksAvailableElement.textContent) || 0;
+        booksAvailableElement.textContent = Math.max(0, currentAvailable - booksAdded);
+      }
+    }
+
+    // Notification function
+    function showNotification(message, type) {
+      // Remove existing notifications
+      const existingAlerts = document.querySelectorAll('.custom-alert');
+      existingAlerts.forEach(alert => {
+        alert.style.opacity = '0';
+        setTimeout(() => alert.remove(), 300);
+      });
+      
+      // Create new alert
+      const alert = document.createElement('div');
+      alert.className = `custom-alert alert alert-${type} alert-dismissible fade show`;
+      alert.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        z-index: 10000;
+        min-width: 300px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        border: none;
+        animation: slideIn 0.3s ease;
+      `;
+      
+      const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
+      alert.innerHTML = `
+        <div class="d-flex align-items-center">
+          <i class="fas fa-${icon} me-2 fs-4"></i>
+          <div class="flex-grow-1">${message}</div>
+          <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+      `;
+      
+      document.body.appendChild(alert);
+      
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        if (alert.parentNode) {
+          alert.style.opacity = '0';
+          alert.style.transition = 'opacity 0.3s ease';
+          setTimeout(() => alert.remove(), 300);
+        }
+      }, 5000);
+    }
+
+    // Add custom alert styles
+    const style = document.createElement('style');
+    style.textContent = `
+      .modal-open {
+        overflow: hidden;
+        padding-right: 0 !important;
+      }
+      
+      .modal-open .navbar-glass {
+        padding-right: 17px;
+      }
+      
+      .custom-alert {
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      }
+      
+      .alert-success {
+        color: #0f5132 !important;
+        background-color: rgba(209, 231, 221, 0.9) !important;
+        border-color: rgba(195, 230, 203, 0.9) !important;
+      }
+      
+      .alert-danger {
+        color: #842029 !important;
+        background-color: rgba(248, 215, 218, 0.9) !important;
+        border-color: rgba(245, 194, 199, 0.9) !important;
+      }
+    `;
+    document.head.appendChild(style);
   </script>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Animate.css for animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </body>
 </html>
-
-<!-- Parameters and Query parameters && Patch and Put && DELETE -->
