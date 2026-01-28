@@ -14,7 +14,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Database connection
-const connect = "mongodb://127.0.0.1:27017/studentrecord";
+const connect = "mongodb://127.0.0.1:27017/studentDB";
 const { connectDB } = require("./connections/wasterecordconnection");
 
 // Initialize database connection
